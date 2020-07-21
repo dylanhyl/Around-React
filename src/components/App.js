@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import TopBar from "./TopBar";
+import Main from "./Main";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import '../styles/App.css';
+import {TOKEN_KEY} from "../constants";
+
+class App extends Component {
+    state = {
+        isLoggedIn: Boolean(localStorage.getItem(TOKEN_KEY)),
+    }
+
+    handleLoginSucceed = (token) => {
+        localStorage.setItem(TOKEN_KEY, token)
+        this.setState({ isLoggedIn: true});
+    }
+
+    handleLogout = () => {
+        localStorage.removeItem(TOKEN_KEY);
+        this.setState({ isLoggedIn: false });
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <TopBar handleLogout={ this.handleLogout } isLoggedIn={ this.state.isLoggedIn }/>
+                <Main
+                    handleLoginSucceed={ this.handleLoginSucceed }
+                    isLoggedIn = { this.state.isLoggedIn }
+                />
+            </div>
+        )
+    }
 }
 
 export default App;
