@@ -13,7 +13,7 @@ class NormalAroundMap extends Component {
                        onDrag={this.reloadMarker}
                        onZoomChanged={this.reloadMarker}>
                 {
-                    this.props.posts.map(post => <AroundMarker post={post}/>)
+                    this.props.posts.map(post => <AroundMarker post={post} key={post.url}/>)
                 }
             </GoogleMap>
         );
@@ -27,7 +27,7 @@ class NormalAroundMap extends Component {
     reloadMarker = () => {
         const center = this.getCenter();
         const radius = this.getRadius();
-        this.props.loadNearbyPosts(center, radius);
+        this.props.loadPostsByTopic(center, radius);
     }
 
     getCenter() {

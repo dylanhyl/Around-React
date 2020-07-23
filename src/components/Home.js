@@ -27,15 +27,14 @@ class Home extends Component {
 
     handleTopicChange = (e) => {
         const topic = e.target.value;
-        this.setState({
-            value: topic,
-        });
+        this.setState({ value: topic });
         if (topic === TOPIC_AROUND) {
             this.loadNearbyPosts();
         } else {
             this.loadFacesAroundTheWorld();
         }
     }
+
 
     componentDidMount() {
         console.log(navigator.geolocation);
@@ -63,6 +62,14 @@ class Home extends Component {
 
     onFailedLoadGeoLocation = () => {
         this.setState({isLoadingGeoLocation: false, error: 'Failed to load geo location.'});
+    }
+
+    loadPostsByTopic = (center, radius) => {
+        if (this.state.value === TOPIC_AROUND) {
+            return this.loadNearbyPosts(center, radius);
+        } else {
+            return this.loadFacesAroundTheWorld();
+        }
     }
 
     loadNearbyPosts = (center, radius) => {
@@ -184,7 +191,7 @@ class Home extends Component {
                             loadingElement={<div style={{height: `100%`}}/>}
                             containerElement={<div style={{height: `400px`}}/>}
                             mapElement={<div style={{height: `100%`}}/>}
-                            loadNearbyPosts={this.loadNearbyPosts}
+                            loadPostsByTopic={this.loadPostsByTopic}
                             posts={this.state.posts}
                         />
                     </TabPane>
