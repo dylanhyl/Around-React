@@ -26,9 +26,15 @@ class Home extends Component {
     }
 
     handleTopicChange = (e) => {
+        const topic = e.target.value;
         this.setState({
-            value: e.target.value,
+            value: topic,
         });
+        if (topic === TOPIC_AROUND) {
+            this.loadNearbyPosts();
+        } else {
+            this.loadFacesAroundTheWorld();
+        }
     }
 
     componentDidMount() {
@@ -79,6 +85,33 @@ class Home extends Component {
         }).catch((e) => {
             console.error(e);
             this.setState({isLoadingPosts: false, error: e.message});
+        });
+    }
+
+    loadFacesAroundTheWorld() {
+        const token = localStorage.getItem(TOKEN_KEY);
+        this.setState({
+            isLoadingPosts: true,
+            err: ''
+        });
+
+        return fetch(`${API_ROOT}/cluster?term=face`, {
+            method: 'GET',
+            headers: {
+                Authorization: `${AUTH_HEADER} ${token}`,
+            }
+        }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Failed to load posts');
+            }
+        ).then(data => {
+            this.setState({ posts: data ? data : [], isLoadingPosts: false });
+            }
+        ).catch((e) => {
+            console.error(e);
+            this.setState({ isLoadingPosts: false , error: e.message });
         });
     }
 
